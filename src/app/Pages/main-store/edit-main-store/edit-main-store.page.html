@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Main Store</ion-title>
+    <ion-buttons slot="start">
+      <!-- <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button> -->
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="EditMainStoreForm" (ngSubmit)="EditMainStore(EditMainStoreForm)">
+
+        <p style="color: red;">{{ErrorMessage}}</p>
+
+        <ion-item>
+          <ion-label>Main Store Name</ion-label>
+          <ion-input type="text" formControlName="mainStoreName"></ion-input>
+        </ion-item>
+        <br />
+        <ion-button color="primary" type="submit" [disabled]="!EditMainStoreForm.valid">
+          Submit
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
