@@ -22,5 +22,7 @@ export class StateService {
   MainStoreID: Number;
   MainStoreArray: MainStoreModel[];
 
+  ChangedStoreID: Number;
+
   constructor() { }
 }

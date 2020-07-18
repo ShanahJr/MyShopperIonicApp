@@ -6,6 +6,7 @@ import { EventEmitterService } from 'src/app/Services/event-emitter.service';
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 
 import { MainStoreModel } from '../../../Models/MainStore/main-store-model';
+import {MainStoreStoreModel} from '../../../Models/MainStoreStore/main-store-store-model';
 import { StoreModel } from '../../../Models/Store/store-model';
 import { async } from '@angular/core/testing';
 
@@ -81,15 +82,34 @@ export class EditStorePage implements OnInit {
   EditStore(EditStoreForm: FormGroup) {
 
     const Store = EditStoreForm.value;
-    // this.dataService.UpdateStore(Store, this.CurrentStore.storeId).subscribe(() => {
+    this.dataService.UpdateStore(Store, this.CurrentStore.storeId).subscribe(() => {
 
-    //   this.message = this.CurrentStore.storeName + ' has been updated successfully';
-    //   this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
-    //   this.router.navigate(['/store']);
+      this.message = this.CurrentStore.storeName + ' has been updated successfully';
 
-    // })// Update Store Subscription
+      if (this.SelectedMainStore != this.CurrentMainStore.mainStoreId) {
+        
+        this.stateService.ChangedStoreID = this.CurrentStore.storeId;
+        this.eventEmitterService.OnCreateStore({ option: 'onEditStore', value: 'Add component' });
 
-    console.log(this.SelectedMainStore);
+      }
+
+      this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
+
+      var ChangeMainStoreStore = new MainStoreStoreModel;
+      ChangeMainStoreStore.mainStoreId = this.SelectedMainStore;
+      ChangeMainStoreStore.storeId = this.CurrentStore.storeId;
+
+      this.dataService.UpdateMainStoreStore( ChangeMainStoreStore , this.CurrentMainStore.mainStoreId ).subscribe( ( data ) => {
+
+        console.log(data);
+
+      });
+
+      this.router.navigate(['/store']);
+
+    })// Update Store Subscription
+
+    //console.log(this.SelectedMainStore);
 
   }// Edit store
 

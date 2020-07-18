@@ -27,10 +27,10 @@
 
         <ion-item>
           <ion-label position="floating">Main Store Name</ion-label>
-          <ion-select [(ngModel)] = "SelectedMainStore" [ngModelOptions]="{standalone: true}" value="{{SelectedMainStore}}" [compareWith] = "compareWith" >
-          <!-- <ion-select value="{{SelectedMainStore}}" [compareWith] = "compareWith" > -->
+          <!-- <ion-select [(ngModel)] = "SelectedMainStore" [ngModelOptions]="{standalone: true}" [compareWith] = "compareWith" > -->
+            <ion-select [(ngModel)] = "SelectedMainStore" [ngModelOptions]="{standalone: true}" >
 
-            <ion-select-option *ngFor="let mainStore of MainStoreArray" value="{{mainStore.mainStoreId}}">
+            <ion-select-option *ngFor="let mainStore of MainStoreArray" [value]="mainStore.mainStoreId">
               {{mainStore.mainStoreName}}</ion-select-option>
 
           </ion-select>

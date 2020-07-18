@@ -34,24 +34,57 @@ export class StorePage implements OnInit {
     private eventEmitterService: EventEmitterService,
     private alertController: AlertController,
     private popover: PopoverController
-  ) { }// Constructor
+  ) {
+    
+    this.subscription = this.eventEmitterService.notifyObservable$.subscribe((res) => {
 
-  async ngOnInit() {
+      if (res.hasOwnProperty('option') && res.option === 'onSubmitStore') {
+        console.log(res.value, 'called once in Store Page');
+        // perform your other action from here
+        this.GetStores(this.CurrentMainStore.mainStoreId);
+      }// If user is adding a store
+
+      // This function is only called if the MainStore value is changed
+      if (res.hasOwnProperty('option') && res.option === 'onEditStore') {
+        debugger;
+        //console.log(res.value, ' Main store has been changed');
+        // perform your other action from here
+
+        var id = this.stateService.ChangedStoreID;
+        console.log( 'ID in the state service is ' + id );
+        
+        for (let i = 0; i < this.StoreArray.length; i++) {
+
+          const element = this.StoreArray[i];
+          if (element.storeId == id) {
+            this.StoreArray.splice(i,1);
+          }
+          
+        };
+
+      }// If User is editing a store and changed the main store value
+
+      this.subscription.unsubscribe();
+
+    });// End of Event Emitter Subscription
+
+   }// Constructor
+
+  ngOnInit() {
 
     this.CurrentMainStore = this.stateService.CurrentMainStore;
-
     this.GetStores(this.CurrentMainStore.mainStoreId);
     this.stateService.CurrentMainStore = undefined;
 
-    console.log(this.StoreArray);
+    //console.log(this.StoreArray);
 
-    this.subscription = this.eventEmitterService.notifyObservable$.subscribe((res) => {
-      if (res.hasOwnProperty('option') && res.option === 'onSubmitStore') {
-        console.log(res.value, 'called once');
-        // perform your other action from here
-        this.GetStores(this.CurrentMainStore.mainStoreId);
-      }
-    });
+    // this.subscription = this.eventEmitterService.notifyObservable$.subscribe((res) => {
+    //   if (res.hasOwnProperty('option') && res.option === 'onSubmitStore') {
+    //     console.log(res.value, 'called once');
+    //     // perform your other action from here
+    //     this.GetStores(this.CurrentMainStore.mainStoreId);
+    //   }
+    // });
 
   }// ngOnInit
 

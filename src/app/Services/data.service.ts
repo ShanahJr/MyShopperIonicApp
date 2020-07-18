@@ -113,8 +113,8 @@ export class DataService {
     return this.http.post(this.url + "MainStoreStore/", newMainStoreStore);
   } // Add MainStoreStore
 
-  UpdateMainStoreStore(EditedStoreStore: MainStoreStoreModel) {
-    return this.http.put(this.url + "MainStoreStore/", EditedStoreStore);
+  UpdateMainStoreStore(EditedStoreStore: MainStoreStoreModel , CurrentMainStoreID : Number) {
+    return this.http.put(this.url + "MainStoreStore/" + CurrentMainStoreID, EditedStoreStore);
   } // Update MainStoreStore
 
   DeleteMainStoreStore(MainStoreStoreID: Number) {
