@@ -43,14 +43,6 @@ export class DataService {
   } // Constructor
 
   // --------------------------- MainStore Section ---------------------------//
-
-  // GetAllMainStores(): Observable<MainStoreModel[]> {
-  //   // const headers = {
-  //   //   Authorization: "bearer " + localStorage.getItem("UserToken"),
-  //   // };
-  //   return this.http.get<MainStoreModel[]>(this.url + "MainStore/");
-  // } // Get All MainStores
-
   GetAllMainStores() {
     return this.http
       .get<MainStoreModel[]>(this.url + "MainStore/")
@@ -85,6 +77,7 @@ export class DataService {
         this.url + "MainStore/" + MainStoreID,
         EditedMainStore
       )
+      .pipe(take(1))
       .subscribe(() => {
         this.mainStoreStore.dispatch(
           new MainStoreActions.UpdateMainStore(EditedMainStore)

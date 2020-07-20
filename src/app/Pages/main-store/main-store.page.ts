@@ -47,18 +47,18 @@ export class MainStorePage implements OnInit {
     this.MainStoreArray$ = this.store.select(fromRoot.GetMainStores);
     this.GetMainStores();
 
-    this.subscription = this.eventEmitterService.notifyObservable$.subscribe(
-      (res) => {
-        if (
-          res.hasOwnProperty("option") &&
-          res.option === "onSubmitMainStore"
-        ) {
-          console.log(res.value, "called once");
-          // perform your other action from here
-          //this.GetAllMainStore();
-        }
-      }
-    );
+    // this.subscription = this.eventEmitterService.notifyObservable$.subscribe(
+    //   (res) => {
+    //     if (
+    //       res.hasOwnProperty("option") &&
+    //       res.option === "onSubmitMainStore"
+    //     ) {
+    //       console.log(res.value, "called once");
+    //       // perform your other action from here
+    //       //this.GetAllMainStore();
+    //     }
+    //   }
+    // );
   } //ng On Init
 
   GetMainStores() {
@@ -114,9 +114,9 @@ export class MainStorePage implements OnInit {
         if (element.mainStoreId == id) {
           this.store.dispatch(new MainStoreActions.SetActiveMainStore(element));
         }
-        this.router.navigate(["/edit-main-store"]);
       });
     });
+    this.router.navigate(["/edit-main-store"]);
   } // Edit Main Store
 
   // async GetAllMainStore() {

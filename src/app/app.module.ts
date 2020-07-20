@@ -32,7 +32,9 @@ import { EditMainStorePage } from "./Pages/main-store/edit-main-store/edit-main-
     AppRoutingModule,
     HttpClientModule,
     PopoverPageModule,
-    StoreDevtoolsModule,
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+    }),
     StoreModule.forRoot(Reducers),
   ],
   providers: [

@@ -12,6 +12,7 @@ import * as MainStoreActions from "../../../Reducers/MainStore/MainStore.actions
 import { MainStoreModel } from "../../../Models/MainStore/main-store-model";
 import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-edit-main-store",
@@ -36,24 +37,37 @@ export class EditMainStorePage implements OnInit {
   ) {} // Constructor
 
   ngOnInit() {
-    this.ActiveMainStore$ = this.store.select(fromRoot.GetActiveMainStore);
+    this.ActiveMainStore$ = this.store
+      .select(fromRoot.GetActiveMainStore)
+      .pipe(take(1));
+    //this.ActiveMainStore = this.store.select(fromRoot.GetActiveMainStore);
 
-    this.ActiveMainStore$.subscribe((store) => {
+    this.ActiveMainStore$.pipe(take(1)).subscribe((store) => {
       this.EditMainStoreForm = this.formBuilder.group({
         mainStoreId: [store.mainStoreId],
         mainStoreName: [store.mainStoreName, Validators.required],
       });
+
+      console.log(store);
     });
 
     //console.log(this.CurrentMainStore.mainStoreName);
   } //ngOnInit
 
   EditMainStore(EditMainStoreForm: FormGroup) {
-    const MainStore = EditMainStoreForm.value;
+    const store: MainStoreModel = EditMainStoreForm.value;
 
-    this.ActiveMainStore$.subscribe((store) => {
-      this.dataService.UpdateMainStore(store, store.mainStoreId);
-      this.router.navigate([""]);
-    });
+    this.dataService.UpdateMainStore(store, store.mainStoreId);
+    this.router.navigate([""]);
+
+    // this.ActiveMainStore$.subscribe( (store) => {
+
+    //   if (store.mainStoreId == MainStore.mainStoreId) {
+
+    //   }
+
+    //   this.dataService.UpdateMainStore(store, store.mainStoreId);
+
+    // });
   } // Edit main store
 } // Export

@@ -61,26 +61,12 @@ export function MainStoreReducer(
         MainStores: [...state.MainStores.concat([action.payload])],
       };
 
-    // case UPDATE_MAIN_STORE:
-    //   return {
-    //     ...state,
-    //     MainStores: [
-    //       ...state.MainStores.slice(),
-    //       ...state.MainStores.map((mainStore) => {
-    //         if (mainStore.mainStoreId == action.payload.mainStoreId) {
-    //           mainStore = action.payload;
-    //         }
-    //       }), //Map
-    //     ],
-    //   };
-
     case UPDATE_MAIN_STORE:
       return {
         ...state,
         MainStores: [
           ...state.MainStores.map((mainStore) => {
             if (mainStore.mainStoreId !== action.payload.mainStoreId) {
-              console.log(mainStore + " not equal");
               return mainStore;
             } //end of if
             return {
@@ -90,6 +76,36 @@ export function MainStoreReducer(
           }),
         ],
       };
+
+    // case UPDATE_MAIN_STORE:
+    //   return {
+    //     ...state,
+    //     MainStores: [
+    //       ...state.MainStores.map((mainStore) => {
+    //         if (mainStore !== action.payload) {
+    //           return mainStore;
+    //         } //end of if
+    //         return {
+    //           ...mainStore,
+    //           ...action.payload,
+    //         };
+    //       }),
+    //     ],
+    //   };
+
+    // case UPDATE_MAIN_STORE:
+    //   return {
+    //     ...state,
+    //     MainStores: [
+    //       ...state.MainStores.map((mainStore) => {
+    //         //If MainStoreID != to specified ID then re
+    //         if (mainStore.mainStoreId == action.payload.mainStoreId) {
+    //           debugger;
+    //           return { ...mainStore, ...action.payload };
+    //         } //end of if
+    //       }),
+    //     ],
+    //   };
 
     case SET_ACTIVE_MAIN_STORE:
       return {
