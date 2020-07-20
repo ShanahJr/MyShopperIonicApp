@@ -27,13 +27,6 @@ export class CreateStorePage implements OnInit {
     private eventEmitterService: EventEmitterService
   ) {
 
-    this.CreateStoreForm = this.formBuilder.group({
-      storeName: ["", Validators.required],
-      storeLocation: [""],
-      storeRating: ["", Validators.pattern("^[0-9]*$")]
-
-    });
-
   }// Constructor
 
   ngOnInit() {
@@ -41,13 +34,20 @@ export class CreateStorePage implements OnInit {
     this.CurrentMainStore = this.stateService.CurrentMainStore;
     this.stateService.CurrentMainStore = undefined;
 
+    this.CreateStoreForm = this.formBuilder.group({
+      storeName: ["", Validators.required],
+      storeLocation: [""],
+      storeRating: ["", Validators.pattern("^[0-9]*$")],
+      mainStoreId: [this.CurrentMainStore.mainStoreId]
+    });
+
   }//ngOnInit
 
   CreateStore(StoreForm: FormGroup) {
 
     const Store = StoreForm.value;
 
-    this.dataService.AddStore(Store, this.CurrentMainStore.mainStoreId).subscribe(() => {
+    this.dataService.AddStore(Store).subscribe(() => {
 
       this.message = 'MainStore has been saved successfully';
 

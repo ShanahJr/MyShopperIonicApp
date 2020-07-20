@@ -36,6 +36,10 @@ export class StorePage implements OnInit {
     private popover: PopoverController
   ) {
     
+    this.CurrentMainStore = this.stateService.CurrentMainStore;
+    this.GetStores(this.CurrentMainStore.mainStoreId);
+    this.stateService.CurrentMainStore = undefined;
+
     this.subscription = this.eventEmitterService.notifyObservable$.subscribe((res) => {
 
       if (res.hasOwnProperty('option') && res.option === 'onSubmitStore') {
@@ -72,9 +76,7 @@ export class StorePage implements OnInit {
 
   ngOnInit() {
 
-    this.CurrentMainStore = this.stateService.CurrentMainStore;
-    this.GetStores(this.CurrentMainStore.mainStoreId);
-    this.stateService.CurrentMainStore = undefined;
+
 
     //console.log(this.StoreArray);
 
@@ -92,25 +94,21 @@ export class StorePage implements OnInit {
 
     this.StoreArray = [];
 
-    this.dataService.GetMainStoreStore(id).subscribe((data) => {
+    this.dataService.GetStores(id).subscribe((data) => {
 
-      data.forEach((element) => {
-        this.StoreArray.push(element.store);
-      });
+      this.StoreArray = data;
 
     })
 
-  }
+  }// Get all associated stores
 
-  GetMainStores() {
-    this.dataService.GetAllMainStores().subscribe((data) => {
+  // GetMainStores() {
+  //   this.dataService.GetAllMainStores().subscribe((data) => {
+  //     //this.MainStoreArray = data;
+  //     this.stateService.MainStoreArray = data;
+  //   });
 
-      //this.MainStoreArray = data;
-      this.stateService.MainStoreArray = data;
-
-
-    });
-  }// Get Main Stores
+  // }// Get Main Stores
 
   CreateStore() {
     this.stateService.CurrentMainStore = this.CurrentMainStore;
@@ -119,13 +117,13 @@ export class StorePage implements OnInit {
 
   EditStore(id: Number) {
 
-    this.GetMainStores()
+    //this.GetMainStores()
 
     //this.sleep(5000);
 
     var CurrentStore = this.StoreArray.find(sa => sa.storeId == id);
     this.stateService.CurrentStore = CurrentStore;
-    this.stateService.CurrentMainStore = this.CurrentMainStore;
+    //this.stateService.CurrentMainStore = this.CurrentMainStore;
     this.router.navigate(['/store/edit-store'])
 
   }// Edit Main Store

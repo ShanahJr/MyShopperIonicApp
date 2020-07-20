@@ -26,8 +26,13 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Main Store Name</ion-label>
-          <ion-input type="text" readonly> {{CurrentMainStore.mainStoreName}} </ion-input>
+          <ion-label position="floating">Main Store Name</ion-label>
+            <ion-select formControlName="mainStoreId" >
+
+            <ion-select-option [value]="CurrentMainStore.mainStoreId">
+              {{CurrentMainStore.mainStoreName}}</ion-select-option>
+
+          </ion-select>
         </ion-item>
 
         <ion-item>

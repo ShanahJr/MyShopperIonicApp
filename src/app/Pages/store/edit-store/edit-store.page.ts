@@ -23,10 +23,10 @@ export class EditStorePage implements OnInit {
 
   CurrentStore: StoreModel;
   CurrentMainStore: MainStoreModel = null;
-  MainStoreArray: MainStoreModel[] = [];
+  MainStoreArray: MainStoreModel[];
 
   compareWith : any ;
-  SelectedMainStore : Number;
+  //SelectedMainStore : Number;
 
   constructor(
     private dataService: DataService,
@@ -38,40 +38,38 @@ export class EditStorePage implements OnInit {
 
   ) {
 
-
-
   }// Constructor
 
-  ngOnInit() {
-
-    this.GetAllMainStore();
+  async ngOnInit() {
+    //await this.GetAllMainStore();
+    this.MainStoreArray = await this.dataService.GetAllMainStore();
 
     this.CurrentStore = this.stateService.CurrentStore;
-    this.CurrentMainStore = this.stateService.CurrentMainStore;
-    //this.MainStoreArray = this.stateService.MainStoreArray;
-    this.SelectedMainStore = this.CurrentMainStore.mainStoreId;
-
+    //this.SelectedMainStore = this.CurrentMainStore.mainStoreId;
     this.stateService.CurrentStore = undefined;
-    this.stateService.CurrentMainStore = undefined;
+    console.log(this.CurrentStore);
 
     this.EditStoreForm = this.formBuilder.group({
       storeId: [this.CurrentStore.storeId],
       storeName: [this.CurrentStore.storeName, Validators.required],
       storeLocation: [this.CurrentStore.storeLocation],
-      storeRating: [this.CurrentStore.storeRating]
+      storeRating: [this.CurrentStore.storeRating],
+      mainStoreId: [this.CurrentStore.mainStoreId]
     });
 
     this.compareWith = this.compareWithFn;
 
   }//ngOnInit
 
-  GetAllMainStore() {
+  async GetAllMainStore() {
 
-    this.dataService.GetAllMainStores().subscribe((data) => {
+    // this.dataService.GetAllMainStores().subscribe((data) => {
 
-      this.MainStoreArray = data;
+    //   this.MainStoreArray = data;
 
-    });
+    // });
+
+    this.MainStoreArray = await this.dataService.GetAllMainStore();
 
   }// get Main Store
 
@@ -86,24 +84,24 @@ export class EditStorePage implements OnInit {
 
       this.message = this.CurrentStore.storeName + ' has been updated successfully';
 
-      if (this.SelectedMainStore != this.CurrentMainStore.mainStoreId) {
+      // if (this.SelectedMainStore != this.CurrentMainStore.mainStoreId) {
         
-        this.stateService.ChangedStoreID = this.CurrentStore.storeId;
-        this.eventEmitterService.OnCreateStore({ option: 'onEditStore', value: 'Add component' });
+      //   this.stateService.ChangedStoreID = this.CurrentStore.storeId;
+      //   this.eventEmitterService.OnCreateStore({ option: 'onEditStore', value: 'Add component' });
 
-      }
+      // }
 
-      this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
+      // this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
 
-      var ChangeMainStoreStore = new MainStoreStoreModel;
-      ChangeMainStoreStore.mainStoreId = this.SelectedMainStore;
-      ChangeMainStoreStore.storeId = this.CurrentStore.storeId;
+      // var ChangeMainStoreStore = new MainStoreStoreModel;
+      // ChangeMainStoreStore.mainStoreId = this.SelectedMainStore;
+      // ChangeMainStoreStore.storeId = this.CurrentStore.storeId;
 
-      this.dataService.UpdateMainStoreStore( ChangeMainStoreStore , this.CurrentMainStore.mainStoreId ).subscribe( ( data ) => {
+      // this.dataService.UpdateStore( ChangeMainStoreStore , this.CurrentMainStore.mainStoreId ).subscribe( ( data ) => {
 
-        console.log(data);
+      //   console.log(data);
 
-      });
+      // });
 
       this.router.navigate(['/store']);
 

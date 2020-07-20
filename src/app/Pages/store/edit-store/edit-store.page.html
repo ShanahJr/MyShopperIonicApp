@@ -15,7 +15,7 @@
 <ion-content>
 
   <ion-card>
-    <ion-card-content>
+    <ion-card-content *ngIf = "MainStoreArray">
       <form [formGroup]="EditStoreForm" (ngSubmit)="EditStore(EditStoreForm)">
 
         <p style="color: red;">{{ErrorMessage}}</p>
@@ -27,23 +27,13 @@
 
         <ion-item>
           <ion-label position="floating">Main Store Name</ion-label>
-          <!-- <ion-select [(ngModel)] = "SelectedMainStore" [ngModelOptions]="{standalone: true}" [compareWith] = "compareWith" > -->
-            <ion-select [(ngModel)] = "SelectedMainStore" [ngModelOptions]="{standalone: true}" >
+            <ion-select formControlName="mainStoreId" >
 
             <ion-select-option *ngFor="let mainStore of MainStoreArray" [value]="mainStore.mainStoreId">
               {{mainStore.mainStoreName}}</ion-select-option>
 
           </ion-select>
-          <!-- <ion-select [compareWith]="compareWith" value="{{MyDefaultYearIdValue}}" >
-            <ion-select-option *ngFor="let year of years" value="{{year.id}}">{{year.name}}
-            </ion-select-option>
-          </ion-select> -->
         </ion-item>
-
-        <!-- <ion-item>
-          <ion-label position="stacked">Main Store Name</ion-label>
-          <ion-input type="text" readonly> {{CurrentMainStore.mainStoreName}} </ion-input>
-        </ion-item> -->
 
         <ion-item>
           <ion-label position="floating">Store Location</ion-label>

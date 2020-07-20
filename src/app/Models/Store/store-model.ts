@@ -5,6 +5,7 @@ export class StoreModel {
     storeId: Number;
     storeName: string;
     storeLocation: string;
-    storeRating: number;
+    storeRating: Number;
+    mainStoreId : Number
 
 }

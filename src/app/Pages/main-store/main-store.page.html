@@ -9,17 +9,24 @@
 
 <div style="height: 100%; padding-top: 15px;">
   <div class="container">
-  
-    <div *ngFor="let mainStore of MainStoreArray" class="container-item" style="position: relative;">
-  
-      <img src="../../assets/shop.png" alt="" (click)="OpenMainStore(mainStore.mainStoreId)">
-      <ion-card-subtitle style="color: white;">{{mainStore.mainStoreName}}</ion-card-subtitle>
-  
-      <br>
-  
+    <div
+      *ngFor="let mainStore of MainStoreArray$ | async"
+      class="container-item"
+      style="position: relative;"
+    >
+      <img
+        src="../../assets/shop.png"
+        alt=""
+        (click)="ViewStores(mainStore.mainStoreId)"
+      />
+      <ion-card-subtitle style="color: white;"
+        >{{mainStore.mainStoreName}}</ion-card-subtitle
+      >
+
+      <br />
+
       <div>
         <ion-fab vertical="bottom" horizontal="end" class="BottomRight">
-  
           <ion-fab-button mini size="small" translucent="true">
             <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
           </ion-fab-button>
@@ -27,27 +34,23 @@
             <ion-fab-button (click)="CreatePopOver()">
               <ion-icon name="eye-outline"></ion-icon>
             </ion-fab-button>
-            <ion-fab-button (click)="EditMainStore(mainStore.mainStoreId)">
+            <ion-fab-button (click)="UpdateMainStore(mainStore.mainStoreId)">
               <ion-icon name="pencil-outline"></ion-icon>
             </ion-fab-button>
             <ion-fab-button (click)="PresentAlert(mainStore.mainStoreId)">
               <ion-icon name="trash-outline"></ion-icon>
             </ion-fab-button>
           </ion-fab-list>
-  
         </ion-fab>
       </div>
-  
     </div>
-
   </div>
 
-  <br>
+  <br />
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="CreateMainStore()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </div>

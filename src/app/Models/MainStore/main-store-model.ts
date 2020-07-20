@@ -1,12 +1,8 @@
-import { MainStoreStoreModel } from '../MainStoreStore/main-store-store-model';
+import { MainStoreStoreModel } from "../MainStoreStore/main-store-store-model";
 
 export class MainStoreModel {
+  constructor() {}
 
-    constructor() { }
-
-    mainStoreId: number;
-    mainStoreName: string;
-
-    mainStoreStore: MainStoreStoreModel[];
-
-}// MainStore Model
+  mainStoreId: Number;
+  mainStoreName: string;
+} // MainStore Model

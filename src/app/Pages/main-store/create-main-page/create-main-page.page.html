@@ -13,23 +13,27 @@
 </ion-header>
 
 <ion-content>
-
   <ion-card>
     <ion-card-content>
-      <form [formGroup]="CreateMainStoreForm" (ngSubmit)="CreateMainStore(CreateMainStoreForm)">
-
+      <form
+        [formGroup]="CreateMainStoreForm"
+        (ngSubmit)="CreateMainStore(CreateMainStoreForm)"
+      >
         <p style="color: red;">{{ErrorMessage}}</p>
 
         <ion-item>
           <ion-label>Main Store Name</ion-label>
-          <ion-input type="text" formControlName="MainStoreName"></ion-input>
+          <ion-input type="text" formControlName="mainStoreName"></ion-input>
         </ion-item>
         <br />
-        <ion-button color="primary" type="submit" [disabled]="!CreateMainStoreForm.valid">
+        <ion-button
+          color="primary"
+          type="submit"
+          [disabled]="!CreateMainStoreForm.valid"
+        >
           Submit
         </ion-button>
       </form>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
