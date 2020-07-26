@@ -1,0 +1,17 @@
+.imageContainer {
+  width: 100%;
+  position: relative;
+
+  img {
+    margin: auto;
+  }
+
+  ion-fab {
+    z-index: 999 !important;
+  }
+}
+
+.BottomRight {
+  right: -5px !important;
+  bottom: -5px !important;
+}

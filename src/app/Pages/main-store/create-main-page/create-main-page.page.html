@@ -21,8 +21,22 @@
       >
         <p style="color: red;">{{ErrorMessage}}</p>
 
+        <div class="imageContainer">
+          <img [src]="transformer()" />
+          <ion-fab vertical="bottom" horizontal="end" class="BottomRight">
+            <ion-fab-button (click)="selectImageSource()">
+              <ion-icon name="camera"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+        </div>
+
         <ion-item>
-          <ion-label>Main Store Name</ion-label>
+          <ion-label position="floating">Image Title</ion-label>
+          <ion-input type="text" formControlName="imageTitle"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Main Store Name</ion-label>
           <ion-input type="text" formControlName="mainStoreName"></ion-input>
         </ion-item>
         <br />

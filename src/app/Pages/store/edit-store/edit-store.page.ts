@@ -1,106 +1,84 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { DataService } from "src/app/Services/data.service";
-import { StateService } from "src/app/Services/state.service";
-import { EventEmitterService } from "src/app/Services/event-emitter.service";
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 
 import { MainStoreModel } from "../../../Models/MainStore/main-store-model";
 import { MainStoreStoreModel } from "../../../Models/MainStoreStore/main-store-store-model";
 import { StoreModel } from "../../../Models/Store/store-model";
 import { async } from "@angular/core/testing";
+import { Observable } from "rxjs";
+
+import * as fromRoot from "../../../app.reducer";
+import * as fromStore from "../../../Reducers/Store/Store.reducer";
+import * as StoreActions from "../../../Reducers/Store/Store.actions";
+import * as fromMainStore from "../../../Reducers/MainStore/MainStore.reducer";
+import { Store } from "@ngrx/store";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-edit-store",
   templateUrl: "./edit-store.page.html",
   styleUrls: ["./edit-store.page.scss"],
 })
-export class EditStorePage implements OnInit {
+export class EditStorePage implements OnInit, OnDestroy {
   EditStoreForm: FormGroup;
   private ErrorMessage: string;
   public message: string;
 
-  CurrentStore: StoreModel;
-  CurrentMainStore: MainStoreModel = null;
-  MainStoreArray: MainStoreModel[];
+  ActiveStore$: Observable<StoreModel>;
+  ActiveMainStore$: Observable<MainStoreModel>;
+  MainStoreArray$: Observable<MainStoreModel[]>;
 
   compareWith: any;
   //SelectedMainStore : Number;
 
   constructor(
     private dataService: DataService,
-    private stateService: StateService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private eventEmitterService: EventEmitterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private StoreState: Store<fromStore.StoreState>,
+    private MainStoreState: Store<fromMainStore.MainStoreState>
   ) {} // Constructor
 
-  async ngOnInit() {
-    //await this.GetAllMainStore();
-    //this.MainStoreArray = await this.dataService.GetAllMainStore();
+  ngOnInit() {
+    this.MainStoreArray$ = this.MainStoreState.select(fromRoot.GetMainStores);
+    this.ActiveStore$ = this.StoreState.select(fromRoot.GetActiveStore).pipe(
+      take(1)
+    );
+    this.ActiveMainStore$ = this.MainStoreState.select(
+      fromRoot.GetActiveMainStore
+    ).pipe(take(1));
 
-    this.CurrentStore = this.stateService.CurrentStore;
-    //this.SelectedMainStore = this.CurrentMainStore.mainStoreId;
-    this.stateService.CurrentStore = undefined;
-    console.log(this.CurrentStore);
-
-    this.EditStoreForm = this.formBuilder.group({
-      storeId: [this.CurrentStore.storeId],
-      storeName: [this.CurrentStore.storeName, Validators.required],
-      storeLocation: [this.CurrentStore.storeLocation],
-      storeRating: [this.CurrentStore.storeRating],
-      mainStoreId: [this.CurrentStore.mainStoreId],
+    this.ActiveStore$.pipe(take(1)).subscribe((CurrentStore) => {
+      this.EditStoreForm = this.formBuilder.group({
+        storeId: [CurrentStore.storeId],
+        storeName: [CurrentStore.storeName, Validators.required],
+        storeLocation: [CurrentStore.storeLocation],
+        storeRating: [CurrentStore.storeRating],
+        mainStoreId: [CurrentStore.mainStoreId],
+      });
     });
-
-    this.compareWith = this.compareWithFn;
   } //ngOnInit
 
-  async GetAllMainStore() {
-    // this.dataService.GetAllMainStores().subscribe((data) => {
-    //   this.MainStoreArray = data;
-    // });
-    //this.MainStoreArray = await this.dataService.GetAllMainStore();
-  } // get Main Store
-
-  // compareFn(e1: MainStoreModel, e2: MainStoreModel): boolean {
-  //   return e1 && e2 ? e1.mainStoreId == e2.mainStoreId : e1 == e2;
-  // }
-
   EditStore(EditStoreForm: FormGroup) {
-    const Store = EditStoreForm.value;
-    this.dataService
-      .UpdateStore(Store, this.CurrentStore.storeId)
-      .subscribe(() => {
-        this.message =
-          this.CurrentStore.storeName + " has been updated successfully";
+    const Store: StoreModel = EditStoreForm.value;
 
-        // if (this.SelectedMainStore != this.CurrentMainStore.mainStoreId) {
-
-        //   this.stateService.ChangedStoreID = this.CurrentStore.storeId;
-        //   this.eventEmitterService.OnCreateStore({ option: 'onEditStore', value: 'Add component' });
-
-        // }
-
-        // this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
-
-        // var ChangeMainStoreStore = new MainStoreStoreModel;
-        // ChangeMainStoreStore.mainStoreId = this.SelectedMainStore;
-        // ChangeMainStoreStore.storeId = this.CurrentStore.storeId;
-
-        // this.dataService.UpdateStore( ChangeMainStoreStore , this.CurrentMainStore.mainStoreId ).subscribe( ( data ) => {
-
-        //   console.log(data);
-
-        // });
-
-        this.router.navigate(["/store"]);
-      }); // Update Store Subscription
-
-    //console.log(this.SelectedMainStore);
+    this.ActiveStore$.pipe(take(1)).subscribe((aStore) => {
+      // If main store has changed, then pass value true so that some extra changes can be made
+      // to the main State
+      if (aStore.mainStoreId != Store.mainStoreId) {
+        this.dataService.UpdateStore(Store, Store.storeId, true);
+      } else {
+        this.dataService.UpdateStore(Store, Store.storeId, false);
+      }
+      this.StoreState.dispatch(new StoreActions.RemoveActiveStore());
+      this.router.navigate(["/store"]);
+    });
   } // Edit store
 
-  compareWithFn(o1, o2) {
-    return o1 === o2;
+  ngOnDestroy(): void {
+    this.StoreState.dispatch(new StoreActions.RemoveActiveStore());
   }
 } // Export

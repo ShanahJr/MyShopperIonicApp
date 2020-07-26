@@ -13,11 +13,12 @@
 </ion-header>
 
 <ion-content>
-
   <ion-card>
     <ion-card-content>
-      <form [formGroup]="CreateStoreForm" (ngSubmit)="CreateStore(CreateStoreForm)">
-
+      <form
+        [formGroup]="CreateStoreForm"
+        (ngSubmit)="CreateStore(CreateStoreForm)"
+      >
         <p style="color: red;">{{ErrorMessage}}</p>
 
         <ion-item>
@@ -26,31 +27,43 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Main Store Name</ion-label>
-            <ion-select formControlName="mainStoreId" >
-
-            <ion-select-option [value]="CurrentMainStore.mainStoreId">
-              {{CurrentMainStore.mainStoreName}}</ion-select-option>
-
-          </ion-select>
+          <ion-label position="stacked">Main Store Name</ion-label>
+          <ion-input readonly type="text">
+            {{(ActiveMainStore$ | async).mainStoreName}}
+          </ion-input>
         </ion-item>
+
+        <!-- <ion-item>
+          <ion-label position="floating">Main Store Name</ion-label>
+          <ion-select formControlName="mainStoreId">
+            <ion-select-option [value]="ActiveMainStore$.mainStoreId">
+              {{(ActiveMainStore$ | async).mainStoreName}}</ion-select-option
+            >
+          </ion-select>
+        </ion-item> -->
 
         <ion-item>
           <ion-label position="floating">Store Location</ion-label>
-          <ion-textarea formControlName="storeLocation"></ion-textarea>
+          <ion-textarea
+            style="height: fit-content;"
+            formControlName="storeLocation"
+          ></ion-textarea>
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Store </ion-label>
+          <ion-label position="floating">Store Rating </ion-label>
           <ion-input type="number" formControlName="storeRating"></ion-input>
         </ion-item>
 
         <br />
-        <ion-button color="primary" type="submit" [disabled]="!CreateStoreForm.valid">
+        <ion-button
+          color="primary"
+          type="submit"
+          [disabled]="!CreateStoreForm.valid"
+        >
           Submit
         </ion-button>
       </form>
     </ion-card-content>
   </ion-card>
-
 </ion-content>

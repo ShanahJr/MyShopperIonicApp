@@ -19,6 +19,10 @@ import { take } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import * as MainStoreActions from "../Reducers/MainStore/MainStore.actions";
 import * as fromMainStore from "../Reducers/MainStore/MainStore.reducer";
+import * as fromStore from "../Reducers/Store/Store.reducer";
+import * as StoreActions from "../Reducers/Store/Store.actions";
+import * as fromShoppingList from "../Reducers/ShoppingList/ShoppingList.reducer";
+import * as ShoppingListActions from "../Reducers/ShoppingList/ShoppingList.actions";
 
 // const httpOptions = {
 //   headers: new HttpHeaders({
@@ -36,18 +40,21 @@ export class DataService {
 
   constructor(
     private http: HttpClient,
-    private mainStoreStore: Store<fromMainStore.MainStoreState>
+    private MainStoreState: Store<fromMainStore.MainStoreState>,
+    private StoreState: Store<fromStore.StoreState>,
+    private ShoppingListState: Store<fromShoppingList.ShoppingListState>
   ) {
     this.url = "https://localhost:6001/api/";
-    //this.url = "https://myshopperapi.shanahjr.co.za/api/",
+    //this.url = "https://myshopperapi.shanahjr.co.za/api/";
   } // Constructor
 
   // --------------------------- MainStore Section ---------------------------//
   GetAllMainStores() {
     return this.http
       .get<MainStoreModel[]>(this.url + "MainStore/")
+      .pipe(take(1))
       .subscribe((MainStores) => {
-        this.mainStoreStore.dispatch(
+        this.MainStoreState.dispatch(
           new MainStoreActions.SetMainStores(MainStores)
         );
         //You can enter in some error handling later after this
@@ -63,10 +70,11 @@ export class DataService {
 
   AddMainStore(newMainStore: MainStoreModel) {
     return this.http
-      .post(this.url + "MainStore/", newMainStore)
+      .post<MainStoreModel>(this.url + "MainStore/", newMainStore)
+      .pipe(take(1))
       .subscribe((mainStore) => {
-        this.mainStoreStore.dispatch(
-          new MainStoreActions.AddMainStore(newMainStore)
+        this.MainStoreState.dispatch(
+          new MainStoreActions.AddMainStore(mainStore)
         );
       });
   } // Add MainStore
@@ -79,7 +87,7 @@ export class DataService {
       )
       .pipe(take(1))
       .subscribe(() => {
-        this.mainStoreStore.dispatch(
+        this.MainStoreState.dispatch(
           new MainStoreActions.UpdateMainStore(EditedMainStore)
         );
       });
@@ -88,8 +96,9 @@ export class DataService {
   DeleteMainStore(MainStoreID: Number, Position: number) {
     return this.http
       .delete(this.url + "MainStore/" + MainStoreID)
+      .pipe(take(1))
       .subscribe(() => {
-        this.mainStoreStore.dispatch(
+        this.MainStoreState.dispatch(
           new MainStoreActions.RemoveMainStore(Position)
         );
       });
@@ -111,46 +120,115 @@ export class DataService {
   } // Get Store
 
   GetStores(id: Number) {
-    return this.http.get<StoreModel[]>(this.url + "Store/GetStores/" + id);
+    return this.http
+      .get<StoreModel[]>(this.url + "Store/GetStores/" + id)
+      .pipe(take(1))
+      .subscribe((stores) => {
+        this.StoreState.dispatch(new StoreActions.SetStores(stores));
+      });
   } // Get Stores under specified main store
 
   AddStore(newStore: StoreModel) {
-    return this.http.post(this.url + "Store/", newStore);
+    return this.http
+      .post<StoreModel>(this.url + "Store/", newStore)
+      .pipe(take(1))
+      .subscribe((store) => {
+        this.StoreState.dispatch(new StoreActions.AddStore(store));
+      });
   } // Add Store
 
-  UpdateStore(EditedStore: StoreModel, StoreID: Number) {
-    return this.http.put(this.url + "Store/" + StoreID, EditedStore);
+  UpdateStore(
+    EditedStore: StoreModel,
+    StoreID: number,
+    MainStoreChange: boolean
+  ) {
+    return this.http
+      .put(this.url + "Store/" + StoreID, EditedStore)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.StoreState.dispatch(new StoreActions.UpdateStore(EditedStore));
+        if (MainStoreChange == true) {
+          this.StoreState.dispatch(new StoreActions.RemoveStore(StoreID));
+        }
+      });
   } // Update Store
 
-  DeleteStore(StoreID: Number) {
-    return this.http.delete(this.url + "Store/" + StoreID);
+  DeleteStore(StoreID: number) {
+    return this.http
+      .delete(this.url + "Store/" + StoreID)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.StoreState.dispatch(new StoreActions.RemoveStore(StoreID));
+      });
   } // Delete Store
 
-  // // --------------------------- MainStoreStore Section ---------------------------//
+  // --------------------------- Shopping List Section ---------------------------//
+  GetAllShoppingLists() {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    return this.http.get<ShoppingListModel[]>(this.url + "ShoppingList/");
+  } // Get All ShoppingLists
 
-  // GetAllMainStoreStores() {
-  //   // const headers = {
-  //   //   Authorization: "bearer " + localStorage.getItem("UserToken"),
-  //   // };
-  //   return this.http.get<MainStoreStoreModel[]>(this.url + "MainStoreStore/");
-  // } // Get All MainStoreStores
+  GetShoppingList(id: Number) {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    return this.http.get<ShoppingListModel>(this.url + "ShoppingList/" + id);
+  } // Get ShoppingList
 
-  // GetMainStoreStore(MainStoreStoreID: Number) {
-  //   // const headers = {
-  //   //   Authorization: "bearer " + localStorage.getItem("UserToken"),
-  //   // };
-  //   return this.http.get<MainStoreStoreModel[]>(this.url + "MainStoreStore/" + MainStoreStoreID);
-  // } // Get MainStoreStore
+  GetShoppingLists(id: Number) {
+    return this.http
+      .get<ShoppingListModel[]>(
+        this.url + "ShoppingList/GetShoppingLists/" + id
+      )
+      .pipe(take(1))
+      .subscribe((shoppingLists) => {
+        this.ShoppingListState.dispatch(
+          new ShoppingListActions.SetShoppingLists(shoppingLists)
+        );
+      });
+  } // Get ShoppingLists under specified main shoppingList
 
-  // AddMainStoreStore(newMainStoreStore: MainStoreStoreModel) {
-  //   return this.http.post(this.url + "MainStoreStore/", newMainStoreStore);
-  // } // Add MainStoreStore
+  AddShoppingList(newShoppingList: ShoppingListModel) {
+    return this.http
+      .post<ShoppingListModel>(this.url + "ShoppingList/", newShoppingList)
+      .pipe(take(1))
+      .subscribe((shoppingList) => {
+        this.ShoppingListState.dispatch(
+          new ShoppingListActions.AddShoppingList(shoppingList)
+        );
+      });
+  } // Add ShoppingList
 
-  // UpdateMainStoreStore(EditedStoreStore: MainStoreStoreModel , CurrentMainStoreID : Number) {
-  //   return this.http.put(this.url + "MainStoreStore/" + CurrentMainStoreID, EditedStoreStore);
-  // } // Update MainStoreStore
+  UpdateShoppingList(
+    EditedShoppingList: ShoppingListModel,
+    ShoppingListID: number,
+    StoreChange: boolean
+  ) {
+    return this.http
+      .put(this.url + "ShoppingList/" + ShoppingListID, EditedShoppingList)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ShoppingListState.dispatch(
+          new ShoppingListActions.UpdateShoppingList(EditedShoppingList)
+        );
+        if (StoreChange == true) {
+          this.ShoppingListState.dispatch(
+            new ShoppingListActions.RemoveShoppingList(ShoppingListID)
+          );
+        }
+      });
+  } // Update ShoppingList
 
-  // DeleteMainStoreStore(MainStoreStoreID: Number) {
-  //   return this.http.delete(this.url + "MainStoreStore/" + MainStoreStoreID);
-  // } // Delete MainStoreStore
-} // End of DataService
+  DeleteShoppingList(ShoppingListID: number) {
+    return this.http
+      .delete(this.url + "ShoppingList/" + ShoppingListID)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ShoppingListState.dispatch(
+          new ShoppingListActions.RemoveShoppingList(ShoppingListID)
+        );
+      });
+  } // Delete ShoppingList
+}

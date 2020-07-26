@@ -1,11 +1,9 @@
 export class StoreModel {
+  constructor() {}
 
-    constructor() { }
-
-    storeId: Number;
-    storeName: string;
-    storeLocation: string;
-    storeRating: Number;
-    mainStoreId : Number
-
+  storeId: number;
+  storeName: string;
+  storeLocation: string;
+  storeRating: number;
+  mainStoreId: number;
 }

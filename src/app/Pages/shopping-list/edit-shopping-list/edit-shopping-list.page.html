@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> {{(ActiveShoppingList$ | async).shoppingListName}} </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <form
+        [formGroup]="EditShoppingListForm"
+        (ngSubmit)="EditShoppingList(EditShoppingListForm)"
+      >
+        <p style="color: red;">{{ErrorMessage}}</p>
+
+        <ion-item>
+          <ion-label position="floating">Shopping List Name</ion-label>
+          <ion-input type="text" formControlName="shoppingListName"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Store Name</ion-label>
+          <ion-select formControlName="storeId">
+            <ion-select-option
+              *ngFor="let store of StoreArray$ | async"
+              [value]="store.storeId"
+            >
+              {{store.storeName}}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+
+        <br />
+        <ion-button color="primary" type="submit">
+          Submit
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

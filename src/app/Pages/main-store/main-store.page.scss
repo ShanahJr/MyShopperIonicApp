@@ -1,33 +1,36 @@
 .container {
-    display: grid;
-    grid-template-columns: auto auto;
-    // height: 100%;
-    column-gap: 10px;
-    row-gap: 30px;
+  display: grid;
+  grid-template-columns: auto auto;
+  // height: 100%;
+  column-gap: 10px;
+  row-gap: 30px;
 }
 
-.container-item{
-    width: fit-content; 
-    margin: auto; 
-    text-align: left; 
-    background-color: gray; 
-    padding: 10px;
+.container-item {
+  width: fit-content;
+  margin: auto;
+  text-align: left;
+  background-color: gray;
+  padding: 10px;
 
-    border-radius: 10px;
-    height: fit-content;
-    
+  border-radius: 10px;
+  height: fit-content;
 }
 
+.image {
+  height: 128px;
+  width: 128px;
+  margin: auto;
+}
 
-.BottomRight
-{
-    right: -5px !important;
-    bottom: -5px !important;
+.BottomRight {
+  right: -5px !important;
+  bottom: -5px !important;
 }
 
 .fab[mini] {
-    margin: 8px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
+  margin: 8px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
 }

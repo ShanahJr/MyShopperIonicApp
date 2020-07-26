@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { EventEmitterService } from "../../Services/event-emitter.service";
 import { DataService } from "src/app/Services/data.service";
-import { StateService } from "src/app/Services/state.service";
-import { Subscription } from "rxjs";
+import { DomSanitizer } from "@angular/platform-browser";
 
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 
 import * as fromRoot from "../../app.reducer";
@@ -26,18 +24,15 @@ import { PopoverPage } from "../../Components/popover/popover.page";
   styleUrls: ["./main-store.page.scss"],
 })
 export class MainStorePage implements OnInit {
-  private subscription: Subscription;
   MainStoreArray$: Observable<MainStoreModel[]>;
 
   constructor(
     private dataService: DataService,
-    private stateService: StateService,
     private router: Router,
     // public modalController: ModalController,
-    private eventEmitterService: EventEmitterService,
     private alertController: AlertController,
     private popover: PopoverController,
-
+    private sanitizer: DomSanitizer,
     private store: Store<fromMainStore.MainStoreState>
   ) {
     //this.GetAllMainStore();
@@ -46,24 +41,15 @@ export class MainStorePage implements OnInit {
   ngOnInit() {
     this.MainStoreArray$ = this.store.select(fromRoot.GetMainStores);
     this.GetMainStores();
-
-    // this.subscription = this.eventEmitterService.notifyObservable$.subscribe(
-    //   (res) => {
-    //     if (
-    //       res.hasOwnProperty("option") &&
-    //       res.option === "onSubmitMainStore"
-    //     ) {
-    //       console.log(res.value, "called once");
-    //       // perform your other action from here
-    //       //this.GetAllMainStore();
-    //     }
-    //   }
-    // );
   } //ng On Init
 
   GetMainStores() {
     this.dataService.GetAllMainStores();
   } // Get all the main Stores
+
+  ViewMainStoreDetails(id: number) {
+    this.CreatePopOver(id);
+  }
 
   ViewStores(id: Number) {
     this.OpenMainStore(id);
@@ -73,19 +59,41 @@ export class MainStorePage implements OnInit {
     this.router.navigate(["/create-main-store"]);
   } // Create Main Store
 
-  UpdateMainStore(id: number) {
+  UpdateMainStore(id: Number) {
     this.EditMainStore(id);
   }
 
-  // CreatePopOver() {
+  transform(image: string) {
+    if (image) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(
+        "data:image;base64," + image
+      );
+    } else {
+      return "../../../assets/NoImage.jpg";
+    }
+  }
 
-  //   this.popover.create({ component: PopoverPage, showBackdrop: false }).then((popoverElement) => {
-  //     popoverElement.present();
-  //   })
+  CreatePopOver(id: any) {
+    this.MainStoreArray$.pipe(take(1)).subscribe((array) => {
+      var MainStore: MainStoreModel = array.find((a) => a.mainStoreId == id);
+      this.store.dispatch(new MainStoreActions.SetActiveMainStore(MainStore));
 
-  // }// Create popover
+      this.popover
+        .create({
+          component: PopoverPage,
+          showBackdrop: true,
+          componentProps: {
+            Mode: "MainStore",
+            Name: MainStore.mainStoreName,
+          },
+        })
+        .then((popoverElement) => {
+          popoverElement.present();
+        });
+    });
+  } // Create popover
 
-  async PresentAlert(id: Number) {
+  async PresentAlert(id) {
     const alert = await this.alertController.create({
       header: "Warning",
       subHeader: "About to delete something",
@@ -94,10 +102,10 @@ export class MainStorePage implements OnInit {
         {
           text: "Yes Please",
           handler: () => {
-            this.MainStoreArray$.subscribe((data) => {
+            this.MainStoreArray$.pipe(take(1)).subscribe((data) => {
               const position = data.findIndex((d) => d.mainStoreId === id);
               this.dataService.DeleteMainStore(id, position);
-            }).unsubscribe();
+            });
           }, //Handler for yes please
         },
 
@@ -109,7 +117,7 @@ export class MainStorePage implements OnInit {
   } //Present Alert
 
   EditMainStore(id: Number) {
-    this.MainStoreArray$.subscribe((mainStore) => {
+    this.MainStoreArray$.pipe(take(1)).subscribe((mainStore) => {
       mainStore.forEach((element) => {
         if (element.mainStoreId == id) {
           this.store.dispatch(new MainStoreActions.SetActiveMainStore(element));
@@ -119,22 +127,8 @@ export class MainStorePage implements OnInit {
     this.router.navigate(["/edit-main-store"]);
   } // Edit Main Store
 
-  // async GetAllMainStore() {
-
-  //   // this.dataService.GetAllMainStores().subscribe((data) => {
-
-  //   //   this.MainStoreArray = data;
-  //   //   //console.log(this.MainStoreArray)
-
-  //   // })
-
-  //   this.MainStoreArray = await this.dataService.GetAllMainStore();
-  //   console.log(this.MainStoreArray);
-
-  // }// get Main Store
-
   OpenMainStore(id: Number) {
-    this.MainStoreArray$.subscribe((array) => {
+    this.MainStoreArray$.pipe(take(1)).subscribe((array) => {
       var CurrentMainStore = array.find((msa) => msa.mainStoreId == id);
       this.store.dispatch(
         new MainStoreActions.SetActiveMainStore(CurrentMainStore)

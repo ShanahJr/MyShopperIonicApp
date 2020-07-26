@@ -19,7 +19,6 @@ import {
 // } from './training.actions';
 
 import { MainStoreModel } from "../../Models/MainStore/main-store-model";
-import { sample } from "rxjs/operators";
 //import * as fromRoot from '../app.reducer';
 
 export interface MainStoreState {
@@ -115,12 +114,6 @@ export function MainStoreReducer(
             (ms) => ms.mainStoreId == action.payload.mainStoreId
           ),
         },
-      };
-
-    case REMOVE_ACTIVE_MAIN_STORE:
-      return {
-        ...state,
-        ActiveMainStore: null,
       };
 
     case REMOVE_ACTIVE_MAIN_STORE:

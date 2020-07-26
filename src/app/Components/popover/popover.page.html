@@ -1,22 +1,69 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Popover</ion-title>
+    <ion-title>{{Name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div class="Space" *ngIf="Mode == 'MainStore'">
+    <ion-card>
+      <ion-card-header class="CenterText">
+        <ion-card-title>Details</ion-card-title>
+        <hr />
+      </ion-card-header>
 
-  <ion-content padding>
-    <ion-grid>
-      <ion-row>
-        <ion-col>This is an ionic popover example.</ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-button style="width: 300px;" color="success" expand="block" (click)="ClosePopover()">Ok</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-content>
+      <ion-card-content>
+        <ion-label> Main Store Name </ion-label>
+        <ion-item> {{(ActiveMainStore$ | async).mainStoreName}} </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
+  <div *ngIf="Mode == 'Store'">
+    <ion-card>
+      <ion-card-header class="CenterText">
+        <ion-card-title>Details</ion-card-title>
+        <hr />
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-label> Store Name </ion-label>
+        <ion-item> {{(ActiveStore$ | async).storeName}} </ion-item>
+
+        <ion-label> Store Location </ion-label>
+        <ion-item> {{(ActiveStore$ | async).storeLocation}} </ion-item>
+
+        <ion-label> Store Rating </ion-label>
+        <ion-item> {{(ActiveStore$ | async).storeRating}} </ion-item>
+
+        <ion-label> Main Store </ion-label>
+        <ion-item> {{MainStoreName}} </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="Mode == 'ShoppingList'">
+    <ion-card>
+      <ion-card-header class="CenterText">
+        <ion-card-title>Details</ion-card-title>
+        <hr />
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-label> Shopping List Name </ion-label>
+        <ion-item>
+          {{(ActiveShoppingList$ | async).shoppingListName}}
+        </ion-item>
+
+        <ion-label> Creation Date </ion-label>
+        <ion-item> {{(ActiveShoppingList$ | async).creationDate}} </ion-item>
+
+        <ion-label> Store Name </ion-label>
+        <ion-item>
+          {{(ActiveMainStore$ | async).mainStoreName}} {{(ActiveStore$ |
+          async).storeName}}
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

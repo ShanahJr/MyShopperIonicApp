@@ -21,10 +21,10 @@ import { Reducers } from "./app.reducer";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 
 //Page Imports
-import { EditMainStorePage } from "./Pages/main-store/edit-main-store/edit-main-store.page";
+//import { EditMainStorePage } from "./Pages/main-store/edit-main-store/edit-main-store.page";
 
 @NgModule({
-  declarations: [AppComponent, EditMainStorePage],
+  declarations: [AppComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -32,10 +32,10 @@ import { EditMainStorePage } from "./Pages/main-store/edit-main-store/edit-main-
     AppRoutingModule,
     HttpClientModule,
     PopoverPageModule,
+    StoreModule.forRoot(Reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
     }),
-    StoreModule.forRoot(Reducers),
   ],
   providers: [
     StatusBar,

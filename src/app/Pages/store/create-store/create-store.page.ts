@@ -1,65 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { DataService } from "src/app/Services/data.service";
 import { StateService } from "src/app/Services/state.service";
-import { EventEmitterService } from 'src/app/Services/event-emitter.service';
 import { Validators, FormBuilder, FormGroup } from "@angular/forms";
-import { MainStoreModel } from 'src/app/Models/MainStore/main-store-model';
-import { MainStoreStoreModel } from 'src/app/Models/MainStoreStore/main-store-store-model';
+import { MainStoreModel } from "src/app/Models/MainStore/main-store-model";
+
+import { Observable } from "rxjs";
+import { take } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+
+import * as fromRoot from "../../../app.reducer";
+import * as fromStore from "../../../Reducers/Store/Store.reducer";
+import * as fromMainStore from "../../../Reducers/MainStore/MainStore.reducer";
 
 @Component({
-  selector: 'app-create-store',
-  templateUrl: './create-store.page.html',
-  styleUrls: ['./create-store.page.scss'],
+  selector: "app-create-store",
+  templateUrl: "./create-store.page.html",
+  styleUrls: ["./create-store.page.scss"],
 })
 export class CreateStorePage implements OnInit {
-
   private CreateStoreForm: FormGroup;
-  private CurrentMainStore: MainStoreModel;
-  private ErrorMessage: string;
-  public message: string;
+  private ActiveMainStore$: Observable<MainStoreModel>;
 
   constructor(
     private dataService: DataService,
     private stateService: StateService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private eventEmitterService: EventEmitterService
-  ) {
-
-  }// Constructor
+    private MainStoreState: Store<fromMainStore.MainStoreState>,
+    private StoreState: Store<fromStore.StoreState>
+  ) {} // Constructor
 
   ngOnInit() {
+    this.ActiveMainStore$ = this.MainStoreState.select(
+      fromRoot.GetActiveMainStore
+    );
 
-    this.CurrentMainStore = this.stateService.CurrentMainStore;
-    this.stateService.CurrentMainStore = undefined;
-
-    this.CreateStoreForm = this.formBuilder.group({
-      storeName: ["", Validators.required],
-      storeLocation: [""],
-      storeRating: ["", Validators.pattern("^[0-9]*$")],
-      mainStoreId: [this.CurrentMainStore.mainStoreId]
+    this.ActiveMainStore$.pipe(take(1)).subscribe((mainStore) => {
+      console.log(mainStore);
+      this.CreateStoreForm = this.formBuilder.group({
+        storeName: ["", Validators.required],
+        storeLocation: [""],
+        storeRating: ["", Validators.pattern("^[0-9]*$")],
+        mainStoreId: [mainStore.mainStoreId],
+      });
     });
-
-  }//ngOnInit
+  } //ngOnInit
 
   CreateStore(StoreForm: FormGroup) {
-
     const Store = StoreForm.value;
+    this.dataService.AddStore(Store);
+    this.router.navigate(["/store"]);
+  } // Create Store
 
-    this.dataService.AddStore(Store).subscribe(() => {
-
-      this.message = 'MainStore has been saved successfully';
-
-      // this.CreateAnimeForm.reset();
-      this.eventEmitterService.OnCreateStore({ option: 'onSubmitStore', value: 'Add component' });
-      this.router.navigate(["/store"]);
-
-      // this.events.publish('functionCall:LoadAnimeData');
-      //this.eventEmitterService.CallGetAnime;
-
-    })
-
-  }// Create MainStore
-
-}// Export
+  // }// Create MainStore
+} // Export
