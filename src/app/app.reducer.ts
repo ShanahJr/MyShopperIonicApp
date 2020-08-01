@@ -7,17 +7,23 @@ import {
 import * as fromMainStore from "./Reducers/MainStore/MainStore.reducer";
 import * as fromStore from "./Reducers/Store/Store.reducer";
 import * as fromShoppingList from "./Reducers/ShoppingList/ShoppingList.reducer";
+import * as fromProduct from "./Reducers/Product/Product.reducer";
+import * as fromCategory from "./Reducers/Category/Category.reducer";
 
 export interface State {
   MainStore: fromMainStore.MainStoreState;
   Store: fromStore.StoreState;
   ShoppingList: fromShoppingList.ShoppingListState;
+  Product: fromProduct.ProductState;
+  Category: fromCategory.CategoryState;
 }
 
 export const Reducers: ActionReducerMap<State> = {
   MainStore: fromMainStore.MainStoreReducer,
   Store: fromStore.StoreReducer,
   ShoppingList: fromShoppingList.ShoppingListReducer,
+  Product: fromProduct.ProductReducer,
+  Category: fromCategory.CategoryReducer,
 };
 
 //---------------Main Store Section-----------------------//
@@ -68,4 +74,44 @@ export const GetActiveShoppingList = createSelector(
 export const GetIsShoppingListActive = createSelector(
   GetShoppingListState,
   fromShoppingList.GetIsActive
+);
+
+//--------------- Product Section-----------------------//
+export const GetProductState = createFeatureSelector<fromProduct.ProductState>(
+  "Product"
+);
+export const GetProducts = createSelector(
+  GetProductState,
+  fromProduct.GetProducts
+);
+export const GetPageInfo = createSelector(
+  GetProductState,
+  fromProduct.GetPageInfo
+);
+
+export const GetActiveProduct = createSelector(
+  GetProductState,
+  fromProduct.GetActiveProduct
+);
+export const GetIsProductActive = createSelector(
+  GetProductState,
+  fromProduct.GetIsActive
+);
+
+//--------------- Category Section-----------------------//
+export const GetCategoryState = createFeatureSelector<
+  fromCategory.CategoryState
+>("Category");
+export const GetCategorys = createSelector(
+  GetCategoryState,
+  fromCategory.GetCategorys
+);
+
+export const GetActiveCategory = createSelector(
+  GetCategoryState,
+  fromCategory.GetActiveCategory
+);
+export const GetIsCategoryActive = createSelector(
+  GetCategoryState,
+  fromCategory.GetIsActive
 );

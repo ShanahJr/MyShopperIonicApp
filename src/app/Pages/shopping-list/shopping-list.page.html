@@ -15,7 +15,10 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let shoppingList of ShoppingListArray$ | async">
-      <ion-item style="width: 100%;">
+      <ion-item
+        style="width: 100%;"
+        (click)="OpenShoppingList(shoppingList.shoppingListId)"
+      >
         <ion-label> {{shoppingList.shoppingListName}} </ion-label>
       </ion-item>
 

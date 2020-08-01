@@ -52,6 +52,17 @@ export class ShoppingListPage implements OnInit {
     });
   } // GetShoppingLists
 
+  OpenShoppingList(id: number) {
+    this.ShoppingListArray$.pipe(take(1)).subscribe((array) => {
+      var ShoppingList = array.find((sl) => sl.shoppingListId == id);
+      this.ShoppingListState.dispatch(
+        new ShoppingListActions.SetActiveShoppingList(ShoppingList)
+      );
+
+      this.router.navigate(["/shopping-list/shopping-list-products"]);
+    });
+  }
+
   CreateShoppingList() {
     this.router.navigate(["/shopping-list/create-shopping-list"]);
   } // Create  Store

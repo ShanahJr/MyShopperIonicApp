@@ -47,34 +47,3 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-
-<!-- <ion-list>
-
-  <ion-item
-     *ngFor="let store of StoreArray$ | async"
-     (click)="OpenStore( store.storeId )"
-   >
-     <ion-label> {{store.storeName}} </ion-label>
-     <span>
-       <div>
-         <ion-fab vertical="center" horizontal="end">
-           <ion-fab-button mini size="small" translucent="true">
-             <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
-           </ion-fab-button>
-
-           <ion-fab-list side="start">
-             <ion-fab-button (click)="ViewStoreDetails(store.storeId)">
-               <ion-icon name="eye-outline"></ion-icon>
-             </ion-fab-button>
-             <ion-fab-button (click)="EditStore(store.storeId)">
-               <ion-icon name="pencil-outline"></ion-icon>
-             </ion-fab-button>
-             <ion-fab-button (click)="DeleteStore(store.storeId)">
-               <ion-icon name="trash-outline"></ion-icon>
-             </ion-fab-button>
-           </ion-fab-list>
-         </ion-fab>
-       </div>
-     </span>
-   </ion-item>
- </ion-list> -->

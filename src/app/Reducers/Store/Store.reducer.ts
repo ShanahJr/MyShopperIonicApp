@@ -10,14 +10,6 @@ import {
   ADD_STORE,
 } from "../../Reducers/Store/Store.actions";
 
-// import {
-//   TrainingActions,
-//   SET_AVAILABLE_TRAININGS,
-//   SET_FINISHED_TRAININGS,
-//   START_TRAINING,
-//   STOP_TRAINING
-// } from './training.actions';
-
 import { StoreModel } from "../../Models/Store/store-model";
 //import * as fromRoot from '../app.reducer';
 

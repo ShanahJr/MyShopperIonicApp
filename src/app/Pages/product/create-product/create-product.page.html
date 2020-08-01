@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Product</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <form
+        [formGroup]="CreateProductForm"
+        (ngSubmit)="CreateProduct(CreateProductForm)"
+      >
+        <p style="color: red;">{{ErrorMessage}}</p>
+
+        <div class="imageContainer">
+          <img [src]="transformer()" />
+          <ion-fab vertical="bottom" horizontal="end" class="BottomRight">
+            <ion-fab-button (click)="selectImageSource()">
+              <ion-icon name="camera"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Product Name</ion-label>
+          <ion-input type="text" formControlName="productName"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-item style="width: 100%;">
+            <ion-label position="floating">Category</ion-label>
+            <ion-select formControlName="categoryId">
+              <ion-select-option
+                *ngFor="let category of CategoryArray$ | async"
+                [value]="category.categoryId"
+              >
+                {{category.categoryName}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+
+          <div>
+            <ion-fab vertical="center" horizontal="end" slot="fixed">
+              <ion-fab-button (click)="CreateCategory()">
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+            </ion-fab>
+          </div>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Product Price</ion-label>
+          <ion-input type="number" formControlName="currentPrice"></ion-input>
+        </ion-item>
+
+        <br />
+        <ion-button
+          color="primary"
+          type="submit"
+          [disabled]="!CreateProductForm.valid"
+        >
+          Submit
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

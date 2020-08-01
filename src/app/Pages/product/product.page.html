@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Products </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="height: 100%;">
+  <ion-searchbar
+    color="primary"
+    placeholder="Search Products..."
+    showCancelButton="never"
+    animated
+    (keyup)="Search($event)"
+  ></ion-searchbar>
+  <div style="height: 100%; padding-top: 15px;">
+    <div class="container">
+      <div
+        *ngFor="let product of ProductArray$ | async"
+        class="container-item"
+        style="position: relative;"
+      >
+        <img [src]="transform(product.productPicture)" class="image" />
+        <ion-card-subtitle style="color: white;"
+          >{{product.productName}}</ion-card-subtitle
+        >
+        <ion-card-subtitle style="color: white;"
+          >R {{product.currentPrice}}</ion-card-subtitle
+        >
+
+        <br />
+
+        <div>
+          <ion-fab vertical="bottom" horizontal="end" class="BottomRight">
+            <ion-fab-button mini size="small" translucent="true">
+              <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-list side="top">
+              <ion-fab-button (click)="ViewProductDetails(product.productId)">
+                <ion-icon name="eye-outline"></ion-icon>
+              </ion-fab-button>
+              <ion-fab-button (click)="UpdateProduct(product.productId)">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-fab-button>
+              <ion-fab-button (click)="DeleteProduct(product.productId)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-fab-button>
+            </ion-fab-list>
+          </ion-fab>
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="nav-container" *ngIf="(pageInfo$ | async)?.totalPages > 1">
+      <div *ngIf="((pageInfo$ | async)?.pageNumber - 1) >= 1 ">
+        <ion-button (click)="PreviousPage()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div
+        *ngIf="(((pageInfo$ | async)?.pageNumber + 1) <=  (pageInfo$ | async)?.totalPages) && ((ProductArray$ | async)?.length > 0)"
+      >
+        <ion-button (click)="NextPage()">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="CreateProduct()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<!-- <ion-content>
+  <ion-searchbar
+    color="primary"
+    placeholder="Search Products..."
+    showCancelButton="never"
+    animated
+  ></ion-searchbar>
+
+  <ion-item
+    *ngFor="let product of ProductArray$ | async"
+    style="margin-bottom: 10px;"
+  >
+    <ion-item>
+      <img [src]="transform(product.productPicture)" class="image" />
+    </ion-item>
+
+    <ion-item>
+      {{product.productName}}
+    </ion-item>
+
+
+    <ion-item>
+      R {{product.currentPrice}}
+    </ion-item>
+
+
+    <ion-fab vertical="center" horizontal="end">
+      <ion-fab-button size="small" translucent="true">
+        <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-list side="start">
+        <ion-fab-button (click)="ViewProductDetails(product.productId)">
+          <ion-icon name="eye-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="UpdateProduct(product.productId)">
+          <ion-icon name="pencil-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="DeleteProduct(product.productId)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+    </ion-fab>
+  </ion-item>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="CreateProduct()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content> -->

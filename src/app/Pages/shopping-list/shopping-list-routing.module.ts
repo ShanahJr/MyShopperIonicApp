@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'edit-shopping-list',
     loadChildren: () => import('./edit-shopping-list/edit-shopping-list.module').then( m => m.EditShoppingListPageModule)
+  },
+  {
+    path: 'shopping-list-products',
+    loadChildren: () => import('./shopping-list-products/shopping-list-products.module').then( m => m.ShoppingListProductsPageModule)
   }
 ];
 

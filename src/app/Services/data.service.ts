@@ -5,11 +5,7 @@ import { from, Observable } from "rxjs";
 
 import { CategoryModel } from "../Models/Category/category-model";
 import { MainStoreModel } from "../Models/MainStore/main-store-model";
-import { MainStoreStoreModel } from "../Models/MainStoreStore/main-store-store-model";
-import { PriceModel } from "../Models/Price/price-model";
 import { ProductModel } from "../Models/Product/product-model";
-import { ProductCategoryModel } from "../Models/ProductCategory/product-category-model";
-import { ProductPriceModel } from "../Models/ProductPrice/product-price-model";
 import { ShoppingListModel } from "../Models/ShoppingList/shopping-list-model";
 import { ShoppingListProductModel } from "../Models/ShoppingListProduct/shopping-list-product-model";
 import { ShoppingListStoreModel } from "../Models/ShoppingListStore/shopping-list-store-model";
@@ -23,6 +19,11 @@ import * as fromStore from "../Reducers/Store/Store.reducer";
 import * as StoreActions from "../Reducers/Store/Store.actions";
 import * as fromShoppingList from "../Reducers/ShoppingList/ShoppingList.reducer";
 import * as ShoppingListActions from "../Reducers/ShoppingList/ShoppingList.actions";
+import * as fromProduct from "../Reducers/Product/Product.reducer";
+import * as ProductActions from "../Reducers/Product/Product.actions";
+import * as fromCategory from "../Reducers/Category/Category.reducer";
+import * as CategoryActions from "../Reducers/Category/Category.actions";
+import { PageInfo } from "../Models/PageInfo/page-info";
 
 // const httpOptions = {
 //   headers: new HttpHeaders({
@@ -42,7 +43,9 @@ export class DataService {
     private http: HttpClient,
     private MainStoreState: Store<fromMainStore.MainStoreState>,
     private StoreState: Store<fromStore.StoreState>,
-    private ShoppingListState: Store<fromShoppingList.ShoppingListState>
+    private ShoppingListState: Store<fromShoppingList.ShoppingListState>,
+    private ProductState: Store<fromProduct.ProductState>,
+    private CategoryState: Store<fromCategory.CategoryState>
   ) {
     this.url = "https://localhost:6001/api/";
     //this.url = "https://myshopperapi.shanahjr.co.za/api/";
@@ -231,4 +234,173 @@ export class DataService {
         );
       });
   } // Delete ShoppingList
+
+  // --------------------------- Product Section ---------------------------//
+  GetAllProducts(pageInfo: PageInfo) {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    var info = new PageInfo();
+    this.http
+      .get<any>(
+        this.url +
+          "Product?pageNumber=" +
+          pageInfo.pageNumber +
+          "&pageSize=" +
+          pageInfo.pageSize
+      )
+      .pipe(take(1))
+      .subscribe((products) => {
+        this.ProductState.dispatch(
+          new ProductActions.SetProducts(products.data)
+        );
+        info.pageNumber = products.pageNumber;
+        info.pageSize = products.pageSize;
+        info.totalPages = products.totalPages;
+        info.totalRecords = products.totalRecords;
+        this.ProductState.dispatch(new ProductActions.SetPageInfo(info));
+      });
+  } // Get All Products
+
+  SearchProducts(search: string, pageInfo: PageInfo) {
+    var info = new PageInfo();
+    this.http
+      .get<any>(
+        this.url +
+          "Product/Search" +
+          "?pageNumber=" +
+          pageInfo.pageNumber +
+          "&pageSize=" +
+          pageInfo.pageSize +
+          "&Search=" +
+          search
+      )
+      .subscribe((response) => {
+        info.pageNumber = response.pageNumber;
+        info.pageSize = response.pageSize;
+        info.totalPages = response.totalPages;
+        info.totalRecords = response.totalRecords;
+        this.ProductState.dispatch(new ProductActions.SetPageInfo(info));
+
+        this.ProductState.dispatch(
+          new ProductActions.SetProducts(response.data)
+        );
+      });
+  }
+
+  GetProduct(id: Number) {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    return this.http.get<ProductModel>(this.url + "Product/" + id);
+  } // Get Product
+
+  GetProducts(id: Number) {
+    return this.http
+      .get<ProductModel[]>(this.url + "Product/GetProducts/" + id)
+      .pipe(take(1))
+      .subscribe((products) => {
+        this.ProductState.dispatch(new ProductActions.SetProducts(products));
+      });
+  } // Get Products under specified main product
+
+  AddProduct(newProduct: ProductModel) {
+    return this.http
+      .post<ProductModel>(this.url + "Product/", newProduct)
+      .pipe(take(1))
+      .subscribe((product) => {
+        this.ProductState.dispatch(new ProductActions.AddProduct(product));
+      });
+  } // Add Product
+
+  UpdateProduct(EditedProduct: ProductModel, ProductID: number) {
+    return this.http
+      .put(this.url + "Product/" + ProductID, EditedProduct)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ProductState.dispatch(
+          new ProductActions.UpdateProduct(EditedProduct)
+        );
+      });
+  } // Update Product
+
+  DeleteProduct(ProductID: number) {
+    return this.http
+      .delete(this.url + "Product/" + ProductID)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ProductState.dispatch(new ProductActions.RemoveProduct(ProductID));
+      });
+  } // Delete Product
+
+  // --------------------------- Category Section ---------------------------//
+  GetAllCategorys() {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    return this.http
+      .get<CategoryModel[]>(this.url + "Category/")
+      .pipe(take(1))
+      .subscribe((categorys) => {
+        this.CategoryState.dispatch(
+          new CategoryActions.SetCategorys(categorys)
+        );
+      });
+  } // Get All Categorys
+
+  GetCategory(id: Number) {
+    // const headers = {
+    //   Authorization: "bearer " + localStorage.getItem("UserToken"),
+    // };
+    return this.http
+      .get<CategoryModel>(this.url + "Category/" + id)
+      .pipe(take(1))
+      .subscribe((category) => {
+        this.CategoryState.dispatch(
+          new CategoryActions.SetActiveCategory(category)
+        );
+      });
+  } // Get Category
+
+  GetCategorys(id: Number) {
+    return this.http
+      .get<CategoryModel[]>(this.url + "Category/GetCategorys/" + id)
+      .pipe(take(1))
+      .subscribe((categorys) => {
+        this.CategoryState.dispatch(
+          new CategoryActions.SetCategorys(categorys)
+        );
+      });
+  } // Get Categorys under specified main category
+
+  AddCategory(newCategory: CategoryModel) {
+    return this.http
+      .post<CategoryModel>(this.url + "Category/", newCategory)
+      .pipe(take(1))
+      .subscribe((category) => {
+        this.CategoryState.dispatch(new CategoryActions.AddCategory(category));
+      });
+  } // Add Category
+
+  UpdateCategory(EditedCategory: CategoryModel, CategoryID: number) {
+    return this.http
+      .put(this.url + "Category/" + CategoryID, EditedCategory)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.CategoryState.dispatch(
+          new CategoryActions.UpdateCategory(EditedCategory)
+        );
+      });
+  } // Update Category
+
+  DeleteCategory(CategoryID: number) {
+    return this.http
+      .delete(this.url + "Category/" + CategoryID)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.CategoryState.dispatch(
+          new CategoryActions.RemoveCategory(CategoryID)
+        );
+      });
+  } // Delete Category
 }

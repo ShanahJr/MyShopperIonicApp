@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Categories </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let category of CategoryArray$ | async">
+      <ion-item
+        (click)="OpenCategory( category.categoryId )"
+        style="width: 100%;"
+      >
+        <ion-label> {{category.categoryName}} </ion-label>
+      </ion-item>
+
+      <div>
+        <ion-fab vertical="center" horizontal="end">
+          <ion-fab-button mini size="small" translucent="true">
+            <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+          </ion-fab-button>
+
+          <ion-fab-list side="start">
+            <ion-fab-button (click)="ViewCategoryDetails(category.categoryId)">
+              <ion-icon name="eye-outline"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button (click)="EditCategory(category.categoryId)">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button (click)="DeleteCategory(category.categoryId)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-fab-button>
+          </ion-fab-list>
+        </ion-fab>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="CreateCategory()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
