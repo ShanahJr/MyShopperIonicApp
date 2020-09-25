@@ -4,6 +4,7 @@ import { ProductModel } from "../../Models/Product/product-model";
 import { PageInfo } from "../../Models/PageInfo/page-info";
 
 export const SET_PRODUCTS = "[Product] Set Products";
+export const CONCAT_PRODUCTS = "[Product] Concat Products";
 export const SET_PAGE_INFO = "[Product] Set Page Info";
 export const ADD_PAGE_NUMBER = "[Product] Add Page Number";
 export const SUBTRACT_PAGE_NUMBER = "[Product] Subtract Page Number";
@@ -16,6 +17,11 @@ export const ADD_PRODUCT = "[Product] Add Product";
 
 export class SetProducts implements Action {
   readonly type = SET_PRODUCTS;
+
+  constructor(public payload: ProductModel[]) {}
+}
+export class ConcatProducts implements Action {
+  readonly type = CONCAT_PRODUCTS;
 
   constructor(public payload: ProductModel[]) {}
 }
@@ -60,6 +66,7 @@ export class RemoveActiveProduct implements Action {
 
 export type ProductActions =
   | SetProducts
+  | ConcatProducts
   | SetActiveProduct
   | RemoveActiveProduct
   | AddProduct

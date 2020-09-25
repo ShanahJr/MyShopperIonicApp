@@ -3,6 +3,7 @@ import { Action, createFeatureSelector, createSelector } from "@ngrx/store";
 import {
   ProductActions,
   SET_ACTIVE_PRODUCT,
+  CONCAT_PRODUCTS,
   REMOVE_ACTIVE_PRODUCT,
   SET_PRODUCTS,
   REMOVE_PRODUCT,
@@ -39,6 +40,11 @@ export function ProductReducer(state = initialState, action: ProductActions) {
       return {
         ...state,
         Products: action.payload,
+      };
+    case CONCAT_PRODUCTS:
+      return {
+        ...state,
+        Products: state.Products.concat(...action.payload),
       };
 
     case SET_PAGE_INFO:

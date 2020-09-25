@@ -23,6 +23,8 @@ import * as fromProduct from "../Reducers/Product/Product.reducer";
 import * as ProductActions from "../Reducers/Product/Product.actions";
 import * as fromCategory from "../Reducers/Category/Category.reducer";
 import * as CategoryActions from "../Reducers/Category/Category.actions";
+import * as fromShoppingListProduct from "../Reducers/ShoppingListProduct/ShoppingListProduct.reducer";
+import * as ShoppingListProductActions from "../Reducers/ShoppingListProduct/ShoppingListProduct.actions";
 import { PageInfo } from "../Models/PageInfo/page-info";
 
 // const httpOptions = {
@@ -45,10 +47,13 @@ export class DataService {
     private StoreState: Store<fromStore.StoreState>,
     private ShoppingListState: Store<fromShoppingList.ShoppingListState>,
     private ProductState: Store<fromProduct.ProductState>,
-    private CategoryState: Store<fromCategory.CategoryState>
+    private CategoryState: Store<fromCategory.CategoryState>,
+    private ShoppingListProductState: Store<
+      fromShoppingListProduct.ShoppingListProductState
+    >
   ) {
-    this.url = "https://localhost:6001/api/";
-    //this.url = "https://myshopperapi.shanahjr.co.za/api/";
+    //this.url = "https://localhost:6001/api/";
+    this.url = "https://myshopperapi.shanahjr.co.za/api/";
   } // Constructor
 
   // --------------------------- MainStore Section ---------------------------//
@@ -193,6 +198,15 @@ export class DataService {
       });
   } // Get ShoppingLists under specified main shoppingList
 
+  // getShoppingListProducts(id: number) {
+  //   this.http
+  //     .get<ProductModel[]>(this.url + "Product/ShoppingListProduct/" + id)
+  //     .pipe(take(1))
+  //     .subscribe((products) => {
+  //       this.ProductState.dispatch(new ProductActions.SetProducts(products));
+  //     });
+  // }
+
   AddShoppingList(newShoppingList: ShoppingListModel) {
     return this.http
       .post<ShoppingListModel>(this.url + "ShoppingList/", newShoppingList)
@@ -234,6 +248,65 @@ export class DataService {
         );
       });
   } // Delete ShoppingList
+
+  // --------------------------- ShoppingList Product Section ---------------------------//
+  getShoppingListProducts(id: number) {
+    this.http
+      .get<ShoppingListProductModel[]>(
+        this.url + "ShoppingListProducts/GetShoppingList/" + id
+      )
+      .pipe(take(1))
+      .subscribe((shoppingListProducts) => {
+        this.ShoppingListProductState.dispatch(
+          new ShoppingListProductActions.SetShoppingListProducts(
+            shoppingListProducts
+          )
+        );
+      });
+  }
+  AddShoppingListProducts(shoppingListProduct: ShoppingListProductModel) {
+    return this.http
+      .post<ShoppingListProductModel>(
+        this.url + "ShoppingListProducts/",
+        shoppingListProduct
+      )
+      .pipe(take(1))
+      .subscribe((product) => {
+        this.ShoppingListProductState.dispatch(
+          new ShoppingListProductActions.AddShoppingListProduct(product)
+        );
+      });
+  }
+
+  UpdateShoppingListProduct(
+    EditedShoppingListPrduct: ShoppingListProductModel,
+    ShoppingListProductID: number
+  ) {
+    return this.http
+      .put(
+        this.url + "ShoppingListProducts/" + ShoppingListProductID,
+        EditedShoppingListPrduct
+      )
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ShoppingListState.dispatch(
+          new ShoppingListProductActions.UpdateShoppingListProduct(
+            EditedShoppingListPrduct
+          )
+        );
+      });
+  } // Update ShoppingList
+
+  DeleteShoppingListProduct(id: number) {
+    this.http
+      .delete(this.url + "ShoppingListProducts/" + id)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ShoppingListProductState.dispatch(
+          new ShoppingListProductActions.RemoveShoppingListProduct(id)
+        );
+      });
+  }
 
   // --------------------------- Product Section ---------------------------//
   GetAllProducts(pageInfo: PageInfo) {
@@ -284,6 +357,32 @@ export class DataService {
 
         this.ProductState.dispatch(
           new ProductActions.SetProducts(response.data)
+        );
+      });
+  }
+
+  InfiniteProducts(search: string, pageInfo: PageInfo) {
+    var info = new PageInfo();
+    this.http
+      .get<any>(
+        this.url +
+          "Product/Search" +
+          "?pageNumber=" +
+          pageInfo.pageNumber +
+          "&pageSize=" +
+          pageInfo.pageSize +
+          "&Search=" +
+          search
+      )
+      .subscribe((response) => {
+        info.pageNumber = response.pageNumber;
+        info.pageSize = response.pageSize;
+        info.totalPages = response.totalPages;
+        info.totalRecords = response.totalRecords;
+        this.ProductState.dispatch(new ProductActions.SetPageInfo(info));
+
+        this.ProductState.dispatch(
+          new ProductActions.ConcatProducts(response.data)
         );
       });
   }

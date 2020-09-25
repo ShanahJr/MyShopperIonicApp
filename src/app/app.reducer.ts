@@ -9,6 +9,7 @@ import * as fromStore from "./Reducers/Store/Store.reducer";
 import * as fromShoppingList from "./Reducers/ShoppingList/ShoppingList.reducer";
 import * as fromProduct from "./Reducers/Product/Product.reducer";
 import * as fromCategory from "./Reducers/Category/Category.reducer";
+import * as fromShoppingListProduct from "./Reducers/ShoppingListProduct/ShoppingListProduct.reducer";
 
 export interface State {
   MainStore: fromMainStore.MainStoreState;
@@ -16,6 +17,7 @@ export interface State {
   ShoppingList: fromShoppingList.ShoppingListState;
   Product: fromProduct.ProductState;
   Category: fromCategory.CategoryState;
+  ShoppingListProduct: fromShoppingListProduct.ShoppingListProductState;
 }
 
 export const Reducers: ActionReducerMap<State> = {
@@ -24,6 +26,7 @@ export const Reducers: ActionReducerMap<State> = {
   ShoppingList: fromShoppingList.ShoppingListReducer,
   Product: fromProduct.ProductReducer,
   Category: fromCategory.CategoryReducer,
+  ShoppingListProduct: fromShoppingListProduct.ShoppingListProductReducer,
 };
 
 //---------------Main Store Section-----------------------//
@@ -114,4 +117,22 @@ export const GetActiveCategory = createSelector(
 export const GetIsCategoryActive = createSelector(
   GetCategoryState,
   fromCategory.GetIsActive
+);
+
+//--------------- ShoppingListProduct Section-----------------------//
+export const GetShoppingListProductState = createFeatureSelector<
+  fromShoppingListProduct.ShoppingListProductState
+>("ShoppingListProduct");
+export const GetShoppingListProducts = createSelector(
+  GetShoppingListProductState,
+  fromShoppingListProduct.GetShoppingListProducts
+);
+
+export const GetActiveShoppingListProduct = createSelector(
+  GetShoppingListProductState,
+  fromShoppingListProduct.GetActiveShoppingListProduct
+);
+export const GetIsShoppingListProductActive = createSelector(
+  GetShoppingListProductState,
+  fromShoppingListProduct.GetIsActive
 );

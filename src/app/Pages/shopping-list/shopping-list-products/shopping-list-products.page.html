@@ -1,7 +1,249 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>ShoppingListProducts</ion-title>
+    <ion-title>
+      {{(ActiveShoppingList$ | async).shoppingListName}} Shopping List
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+      <ion-back-button>
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content>
+  <ion-searchbar
+    color="primary"
+    placeholder="Search Products..."
+    showCancelButton="never"
+    animated
+    (keyup)="Search($event)"
+    [formControl]="SearchString"
+  ></ion-searchbar>
+
+  <ion-list *ngIf="ShowList == false">
+    <ion-item
+      *ngFor="let product of ProductArray$ | async"
+      (click)="AddToShoppingList(product.productId)"
+    >
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <img
+              style="width: 60; height: 60;"
+              [src]="transform(product.productPicture)"
+            />
+          </ion-col>
+          <ion-col>
+            {{product.productName}}
+          </ion-col>
+          <ion-col>
+            {{product.currentPrice}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+    <ion-infinite-scroll threshold="5%" (ionInfinite)="LoadMore($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="loading more products..."
+      >
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-list>
+
+  <ion-grid *ngIf="ShowList">
+    <ion-row
+      *ngFor="let shoppingListProduct of ShoppingListProductArray$ | async"
+      class="MainRow"
+      id="ShoppingListProduct{{shoppingListProduct.shoppingListProductId}}"
+    >
+      <ion-col size="1" style="height: 100%;">
+        <input
+          type="checkbox"
+          style="margin: auto;"
+          class="CheckBox"
+          [checked]="shoppingListProduct.checked"
+          id="CheckBox{{shoppingListProduct.shoppingListProductId}}"
+          (change)="CheckboxChange(shoppingListProduct.shoppingListProductId)"
+        />
+      </ion-col>
+      <ion-col size="3" class="Picture">
+        <img
+          [src]="transform(shoppingListProduct.product.productPicture)"
+          class="image"
+        />
+      </ion-col>
+      <ion-col>
+        <ion-row
+          (click)="CheckboxChange(shoppingListProduct.shoppingListProductId)"
+        >
+          {{shoppingListProduct.product.productName}}
+        </ion-row>
+        <ion-row>
+          R {{shoppingListProduct.product.currentPrice}}
+        </ion-row>
+        <ion-row>
+          <ion-label>
+            Qty:
+          </ion-label>
+          <input
+            type="number"
+            value="{{shoppingListProduct.productQuantity}}"
+            class="Input"
+            size="2"
+            (change)="QuantityChange($event, shoppingListProduct.shoppingListProductId)"
+          />
+        </ion-row>
+        <ion-row
+          (click)="CheckboxChange(shoppingListProduct.shoppingListProductId)"
+        >
+          Sub Total: R {{shoppingListProduct.product.currentPrice *
+          shoppingListProduct.productQuantity}}
+        </ion-row>
+      </ion-col>
+      <ion-col size="1" class="Controls" style="padding: 0 !important;">
+        <ion-fab vertical="center" horizontal="end">
+          <ion-fab-button
+            size="small"
+            color="danger"
+            (click)="DeleteShoppingListProduct(shoppingListProduct.shoppingListProductId)"
+          >
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      </ion-col>
+    </ion-row>
+
+    <div class="Total">
+      Total : {{Total}}
+    </div>
+  </ion-grid>
+</ion-content>
+
+<!-- <ion-grid
+  style="background-color: aliceblue; font-size: 9pt; margin: 0 !important;"
+>
+  <ion-row
+    *ngFor="let shoppingListProduct of ShoppingListProductArray$ | async"
+    style="background-color: gray;"
+  >
+    <ion-col size="1" class="CheckBox">
+      <input type="checkbox" />
+    </ion-col>
+    <ion-col size="3" class="Picture">
+      <img
+        [src]="transform(shoppingListProduct.product.productPicture)"
+        class="image"
+      />
+    </ion-col>
+    <ion-col>
+      <ion-row>
+        <ion-col size="4" class="ProductName"
+          >{{shoppingListProduct.product.productName}}</ion-col
+        >
+        <ion-col size="1" class="ProductPrice"
+          >{{shoppingListProduct.product.currentPrice}}</ion-col
+        >
+        <ion-col size="1" class="Quantity">
+          <ion-label>
+            Qty:
+          </ion-label>
+          <input
+            type="text"
+            size="2"
+            value="{{shoppingListProduct.productQuantity}}"
+          />
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-label>
+          Sub Total: R600
+        </ion-label>
+      </ion-row>
+    </ion-col>
+    <ion-col size="1" class="Controls" style="padding: 0 !important;">
+      <ion-fab vertical="center" horizontal="end">
+        <ion-fab-button mini size="small" translucent="true">
+          <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+        </ion-fab-button>
+
+        <ion-fab-list side="start">
+          <ion-fab-button (click)="ViewStoreDetails(store.storeId)">
+            <ion-icon name="eye-outline"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button (click)="EditStore(store.storeId)">
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-button (click)="DeleteStore(store.storeId)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-fab-button>
+        </ion-fab-list>
+      </ion-fab>
+    </ion-col>
+  </ion-row>
+</ion-grid> -->
+
+<!-- <ion-content>
+  <ion-list>
+    <ion-item
+      *ngFor="let shoppingListProduct of ShoppingListProductArray$ | async"
+    >
+      <ion-item>
+        <div class="grid-container">
+          <div class="Picture">
+            <img
+              [src]="transform(shoppingListProduct.product.productPicture)"
+              class="image"
+            />
+          </div>
+          <div class="Product-Name">
+            <p>{{shoppingListProduct.product.productName}}</p>
+          </div>
+          <div class="Price">
+            <p>{{shoppingListProduct.product.currentPrice}}</p>
+          </div>
+          <div class="Quantity">
+            <input
+              type="text"
+              size="4"
+              value="{{shoppingListProduct.productQuantity}}"
+            />
+          </div>
+          <div class="sub-total">
+            <p>SubTotal:</p>
+          </div>
+          <div class="Check-Box">
+            <input type="checkbox" />
+          </div>
+          <div class="sub-total-Text">
+            <p>R 600</p>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <ion-fab vertical="center" horizontal="end">
+          <ion-fab-button mini size="small" translucent="true">
+            <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+          </ion-fab-button>
+
+          <ion-fab-list side="start">
+            <ion-fab-button (click)="ViewStoreDetails(store.storeId)">
+              <ion-icon name="eye-outline"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button (click)="EditStore(store.storeId)">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button (click)="DeleteStore(store.storeId)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-fab-button>
+          </ion-fab-list>
+        </ion-fab>
+      </ion-item>
+    </ion-item>
+  </ion-list>
+</ion-content> -->

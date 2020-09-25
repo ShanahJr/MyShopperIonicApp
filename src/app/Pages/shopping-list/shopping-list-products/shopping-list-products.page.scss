@@ -1,0 +1,113 @@
+ion-grid {
+  --ion-grid-padding: 0;
+  --ion-grid-margin: 0;
+  // background-color: aliceblue;
+  font-size: 9pt;
+  margin: 0 !important;
+}
+
+ion-fab-button {
+  margin: 0 !important;
+}
+
+// .image {
+//   width: 70px;
+//   height: 70px;
+// }
+
+.MainRow {
+  background-color: #cdcdcd;
+  color: black;
+  border: solid 1px black;
+  // margin-top: 5px;
+  // margin-bottom: 5px;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.Input {
+  background-color: white;
+  color: black;
+}
+
+.Total {
+  margin: 5px;
+  background-color: #3880ff;
+  border-radius: 5px;
+  border: solid 1px black;
+  padding: 5px;
+  color: white;
+}
+
+// .Checkbox:checked ~ .MainRow {
+//   background-color: darkgray;
+// }
+
+.Checkbox {
+  justify-content: center;
+  align-items: center;
+}
+
+// .grid-container {
+//   height: 100%;
+//   margin: 0;
+// }
+
+// .grid-container {
+//   display: grid;
+//   grid-template-columns: 0.7fr 1.6fr 0.7fr 0.7fr;
+//   grid-template-rows: 0.07fr 0.07fr;
+//   gap: 1px 1px;
+//   grid-template-areas: "Picture Product-Name Price Quantity" "Check-Box . sub-total-Text sub-total";
+// }
+
+// .Picture {
+//   grid-area: Picture;
+
+//   img {
+//     width: 56px;
+//     height: 56px;
+//   }
+// }
+
+// .Product-Name {
+//   grid-area: Product-Name;
+// }
+
+// .Price {
+//   grid-area: Price;
+// }
+
+// .Quantity {
+//   grid-area: Quantity;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// .sub-total {
+//   grid-area: sub-total;
+// }
+
+// .Check-Box {
+//   grid-area: Check-Box;
+// }
+
+// .sub-total-Text {
+//   grid-area: sub-total-Text;
+// }
+// input[type="text"] {
+//   display: block;
+// }
+
+// /* For presentation only, no need to copy the code below */
+// // .grid-container * {
+// //   border: 1px solid red;
+// //   position: relative;
+// // }
+
+// // .grid-container *:after {
+// //   position: absolute;
+// //   top: 0;
+// //   left: 0;
+// // }
